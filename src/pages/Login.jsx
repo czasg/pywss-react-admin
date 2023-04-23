@@ -12,6 +12,7 @@ import {LockOutlined, UserOutlined, SlackOutlined} from '@ant-design/icons';
 
 import "./Login.css";
 import {useNavigate} from "react-router-dom";
+import UserAPI from "../api/system/user";
 
 
 function LoginForm() {
@@ -21,27 +22,41 @@ function LoginForm() {
     const onFinish = (values) => {
         setLoading(true);
         const key = 'loginKey';
-        const startTime = new Date().getTime();
         messageApi.open({
             key,
             type: 'loading',
             content: "登录中",
             duration: 0,
         });
-        const costTime = new Date().getTime() - startTime;
-        let waitTime = costTime < 1000 ? 1000 - costTime : 0;
-        localStorage.setItem('jwtToken', 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJpZCI6IDEsICJuYW1lIjogImNoZW56aWFuZyIsICJhbGlhcyI6ICLpmYjlrZDmmIIiLCAicm9sZXMiOiBbImFkbWluIiwgInRlc3QiXSwgImV4cCI6IDE2OTE2MTU1NjR9.5db57be4e0c6f2c947507390ea8466069b04a440b5384a63787f3a9cb4021a6d');
-        setTimeout(() => {
+        UserAPI.login({...values}).then(data => data.data).then(data => {
             setLoading(false);
+            if (data.code !== 0) {
+                messageApi.open({
+                    key,
+                    type: 'error',
+                    content: `登录失败：${data.message}`,
+                    duration: 2,
+                })
+                return
+            }
+            localStorage.setItem('jwtToken', data.data.token);
             messageApi.open({
                 key,
                 type: 'success',
                 content: "登录成功",
-                duration: 1,
+                duration: 1.5,
             }).then(() => {
                 navigate("/");
             });
-        }, waitTime)
+        }).catch(() => {
+            setLoading(false);
+            messageApi.open({
+                key,
+                type: 'error',
+                content: `登录失败，服务发生未知异常`,
+                duration: 3,
+            })
+        })
     };
     const onFinishFailed = (errorInfo) => {
         messageApi.open({
@@ -94,13 +109,15 @@ function LoginForm() {
                 <Divider plain>
                     <p className="text-white" style={{color: 'rgba(0, 0, 0, 0.7)'}}>登录方式</p>
                 </Divider>
-                <Form.Item name="loginType">
-                    <ConfigProvider
-                        theme={{
-                            token: {
-                                colorBgElevated: 'rgba(0, 0, 0, 0.2)',
-                            },
-                        }}
+                <ConfigProvider
+                    theme={{
+                        token: {
+                            colorBgElevated: 'rgba(0, 0, 0, 0.2)',
+                        },
+                    }}
+                >
+                    <Form.Item
+                        name="loginType"
                     >
                         <Segmented
                             block
@@ -121,8 +138,8 @@ function LoginForm() {
                                 });
                             }}
                         />
-                    </ConfigProvider>
-                </Form.Item>
+                    </Form.Item>
+                </ConfigProvider>
             </Form>
         </>
     )

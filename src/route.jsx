@@ -18,6 +18,7 @@ import App from "./pages/App";
 import Login from "./pages/Login";
 import TemplateTaskList from "./pages/view/template/TaskList";
 import ScanTaskListView from "./pages/view/demo/ScanTaskListView";
+import UserManageView from "./pages/view/system/UserManage";
 import jwt from "./utils/jwt";
 
 function componentLoader() {
@@ -69,14 +70,8 @@ const appComponents = [
         enable: ['admin'],
         children: [
             {
-                path: "user",
-                Component: ScanTaskListView,
-                label: "用户信息",
-                icon: <UserOutlined/>,
-            },
-            {
                 path: "user-management",
-                Component: ScanTaskListView,
+                Component: UserManageView,
                 label: "用户管理",
                 icon: <UserAddOutlined/>,
             },

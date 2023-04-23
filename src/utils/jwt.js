@@ -3,11 +3,15 @@ class JWT {
         localStorage.removeItem('jwtToken');
     }
 
+    getJWT() {
+        return localStorage.getItem('jwtToken')
+    }
+
     getToken() {
         let token = {};
         let valid = false;
         try {
-            const jwtToken = localStorage.getItem('jwtToken');
+            const jwtToken = this.getJWT();
             if (jwtToken === null) {
                 return {token, valid}
             }

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import clsx from "clsx";
-import scan_task from "../../../data/demo/scan_task";
+import scan_task from "../../../api/demo/scan_task";
 
 const ListData = [
     {

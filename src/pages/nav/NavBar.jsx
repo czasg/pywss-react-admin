@@ -36,8 +36,8 @@ export default function NavBar() {
     const navigate = useNavigate();
     const handleMenuClick = ({key}) => {
         for (let item of items) {
-            if (item.key === key && item.extend !== undefined) {
-                if (item.extend.onClick !== undefined) {
+            if (item.key === key) {
+                if (item.extend !== undefined && item.extend.onClick !== undefined) {
                     item.extend.onClick({navigate})
                 }
                 return
@@ -51,7 +51,7 @@ export default function NavBar() {
                 </div>
                 <UserOutlined className="mr-1"/>
                 <div className="mr-2">
-                    {token.alias}
+                    {token.username}
                 </div>
                 <Dropdown
                     className="cursor-pointer"
