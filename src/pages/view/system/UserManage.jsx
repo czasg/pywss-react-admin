@@ -28,63 +28,6 @@ const searchFields = [
     },
 ];
 
-// const columns = [
-//     {
-//         title: 'ID',
-//         dataIndex: 'id',
-//     },
-//     {
-//         title: '英文名',
-//         dataIndex: 'username',
-//     },
-//     {
-//         title: '中文名',
-//         dataIndex: 'alias',
-//     },
-//     {
-//         title: '角色',
-//         dataIndex: 'roles',
-//         render: (_, record) => {
-//             return <Space wrap>
-//                 {
-//                     record.roles.map(role => {
-//                         return <Tag color="blue">{role.alias}/{role.name}</Tag>
-//                     })
-//                 }
-//             </Space>
-//         }
-//     },
-//     {
-//         title: '创建时间',
-//         dataIndex: 'created_at',
-//     },
-//     {
-//         title: '更新时间',
-//         dataIndex: 'updated_at',
-//     },
-//     {
-//         title: '创建者',
-//         dataIndex: 'created_by',
-//     },
-//     {
-//         title: '允许登录',
-//         dataIndex: 'enable',
-//         render: (_, record) => (
-//             <Space size="middle">
-//                 <Switch
-//                     checked={record.enable}
-//                 />
-//             </Space>
-//         ),
-//     },
-// ].map((item, idx) => {
-//     return {
-//         ...item,
-//         key: idx,
-//         align: 'center',
-//     }
-// });
-
 export default function UserManage() {
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
@@ -110,7 +53,8 @@ export default function UserManage() {
             }
             const users = data.data.data.map(user => {
                 return {
-                    ...user, key: user.id,
+                    ...user,
+                    key: user.id,
                 }
             });
             setUsers(users);
@@ -124,6 +68,29 @@ export default function UserManage() {
             message.open({
                 type: 'error',
                 content: `获取用户列表异常：${e.message}`,
+                duration: 3,
+            })
+        })
+    };
+    const update_user = (uid, props) => {
+        UserAPI.update_user(uid, props).then(data => data.data).then(data => {
+            if (data.code !== 0) {
+                message.open({
+                    type: 'error',
+                    content: `更新用户状态异常：${data.message}`,
+                    duration: 3,
+                })
+                return
+            }
+            message.open({
+                type: 'success',
+                content: `更新成功`,
+                duration: 1.5,
+            })
+        }).catch((e) => {
+            message.open({
+                type: 'error',
+                content: `更新异常：${e.message}`,
                 duration: 3,
             })
         })
@@ -172,23 +139,20 @@ export default function UserManage() {
         {
             title: '允许登录',
             dataIndex: 'enable',
-            render: (_, record) => (
-                <Space size="middle">
-                    <Switch
-                        checked={record.enable}
-                        onClick={(v) => {
-                            record.enable = !record.enable;
-                            console.log(v);
-                            UserAPI.update_user(record.id, {
-                                type: 'enable',
-                                enable: v,
-                            }).then(() => {
-                                get_users();
-                            })
-                        }}
-                    />
-                </Space>
-            ),
+            render: (_, record) => {
+                const disabled = record.created_by === 'system'
+                return (
+                    <Space size="middle">
+                        <Switch
+                            defaultChecked={record.enable}
+                            disabled={disabled}
+                            onClick={(v) => {
+                                update_user(record.id, {type: 'enable', enable: v,});
+                            }}
+                        />
+                    </Space>
+                )
+            },
         },
     ].map((item, idx) => {
         return {

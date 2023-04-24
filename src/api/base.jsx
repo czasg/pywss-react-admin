@@ -12,7 +12,6 @@ request.interceptors.request.use(function (config) {
     if (jwtToken !== null) {
         config.headers.set("Authorization", `Bearer ${jwtToken}`);
     }
-    console.log(config)
     return config;
 });
 

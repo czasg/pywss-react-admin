@@ -22,7 +22,7 @@ const items = [
                     content: '注销成功',
                     duration: 1,
                 }).then(() => {
-                    navigate('/');
+                    navigate('/login');
                 });
             }
         }
