@@ -97,7 +97,10 @@ export default function UserManage() {
                 type: 'success',
                 content: `用户 ${user.username} 更新成功`,
                 duration: 1.5,
-            })
+            });
+            if (isModalOpen) {
+                get_users();
+            }
         }).catch((e) => {
             setModalConfirmLoading(false);
             message.open({
@@ -117,18 +120,10 @@ export default function UserManage() {
                 });
                 return
             }
-            const roles = data.data.map(role => {
-                return {
-                    ...role,
-                    key: role.id,
-                }
-            });
-            setRoles(roles);
+            setRoles(data.data);
         })
     }, []);
-    useEffect(() => {
-        get_users();
-    }, [query, pageSize, pageNum]);
+    useEffect(get_users, [query, pageSize, pageNum]);
     const columns = [
         {
             title: 'ID',
@@ -217,37 +212,11 @@ export default function UserManage() {
             title="角色列表"
             okType="default"
             open={isModalOpen}
-            onOk={(v) => {
+            onOk={() => {
                 update_user(curUser, 'role', {roles: selectedTags});
-                // setModalConfirmLoading(true);
-                // UserAPI.update_user_role(curUser.id, selectedTags).then(data => data.data).then(data => {
-                //     setModalConfirmLoading(false);
-                //     if (data.code !== 0) {
-                //         message.open({
-                //             type: 'error',
-                //             content: `更新角色异常：${data.message}`,
-                //             duration: 2,
-                //         });
-                //         return
-                //     }
-                //     setIsModalOpen(false);
-                //     message.open({
-                //         type: 'success',
-                //         content: `更新角色成功`,
-                //         duration: 2,
-                //     });
-                //     get_users();
-                // }).catch(e => {
-                //     setModalConfirmLoading(false);
-                //     message.open({
-                //         type: 'error',
-                //         content: `更新角色异常：${e.message}`,
-                //         duration: 2,
-                //     });
-                // });
             }}
             confirmLoading={modalConfirmLoading}
-            onCancel={(v) => {
+            onCancel={() => {
                 setIsModalOpen(false);
             }}
         >

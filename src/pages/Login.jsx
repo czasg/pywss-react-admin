@@ -44,7 +44,7 @@ function LoginForm() {
                 key,
                 type: 'success',
                 content: "登录成功",
-                duration: 1.5,
+                duration: 0.5,
             }).then(() => {
                 navigate("/");
             });
