@@ -80,8 +80,10 @@ export default function UserManage() {
             })
         })
     };
-    const update_user = (user, props) => {
-        UserAPI.update_user(user.id, props).then(data => data.data).then(data => {
+    const update_user = (user, type, props) => {
+        setModalConfirmLoading(true);
+        UserAPI.update_user(user.id, type, props).then(data => data.data).then(data => {
+            setModalConfirmLoading(false);
             if (data.code !== 0) {
                 message.open({
                     type: 'error',
@@ -90,12 +92,14 @@ export default function UserManage() {
                 })
                 return
             }
+            setIsModalOpen(false);
             message.open({
                 type: 'success',
                 content: `用户 ${user.username} 更新成功`,
                 duration: 1.5,
             })
         }).catch((e) => {
+            setModalConfirmLoading(false);
             message.open({
                 type: 'error',
                 content: `更新用户 ${user.username} 异常：${e.message}`,
@@ -174,7 +178,7 @@ export default function UserManage() {
                             defaultChecked={record.enable}
                             disabled={disabled}
                             onClick={(v) => {
-                                update_user(record, {type: 'enable', enable: v,});
+                                update_user(record, 'enable', {enable: v});
                             }}
                         />
                     </Space>
@@ -214,32 +218,33 @@ export default function UserManage() {
             okType="default"
             open={isModalOpen}
             onOk={(v) => {
-                setModalConfirmLoading(true);
-                UserAPI.update_user_role(curUser.id, selectedTags).then(data => data.data).then(data => {
-                    setModalConfirmLoading(false);
-                    if (data.code !== 0) {
-                        message.open({
-                            type: 'error',
-                            content: `更新角色异常：${data.message}`,
-                            duration: 2,
-                        });
-                        return
-                    }
-                    setIsModalOpen(false);
-                    message.open({
-                        type: 'success',
-                        content: `更新角色成功`,
-                        duration: 2,
-                    });
-                    get_users();
-                }).catch(e => {
-                    setModalConfirmLoading(false);
-                    message.open({
-                        type: 'error',
-                        content: `更新角色异常：${e.message}`,
-                        duration: 2,
-                    });
-                });
+                update_user(curUser, 'role', {roles: selectedTags});
+                // setModalConfirmLoading(true);
+                // UserAPI.update_user_role(curUser.id, selectedTags).then(data => data.data).then(data => {
+                //     setModalConfirmLoading(false);
+                //     if (data.code !== 0) {
+                //         message.open({
+                //             type: 'error',
+                //             content: `更新角色异常：${data.message}`,
+                //             duration: 2,
+                //         });
+                //         return
+                //     }
+                //     setIsModalOpen(false);
+                //     message.open({
+                //         type: 'success',
+                //         content: `更新角色成功`,
+                //         duration: 2,
+                //     });
+                //     get_users();
+                // }).catch(e => {
+                //     setModalConfirmLoading(false);
+                //     message.open({
+                //         type: 'error',
+                //         content: `更新角色异常：${e.message}`,
+                //         duration: 2,
+                //     });
+                // });
             }}
             confirmLoading={modalConfirmLoading}
             onCancel={(v) => {
