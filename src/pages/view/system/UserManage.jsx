@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from "react";
 import TableSearch from "../../../components/antd/TableSearch";
-import {Divider, Tag, Space, Table, message, Button, Switch} from "antd";
+import {Divider, Tag, Space, Table, message, Button, Switch, Modal} from "antd";
 import UserAPI from "../../../api/system/user";
+import RoleAPI from "../../../api/system/role";
+
+const {CheckableTag} = Tag;
 
 const searchFields = [
     {
@@ -31,6 +34,10 @@ const searchFields = [
 export default function UserManage() {
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
+    const [roles, setRoles] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalConfirmLoading, setModalConfirmLoading] = useState(false);
     const [pageInfo, setPageInfo] = useState({
         current: 1,
         pageSize: 10,
@@ -72,29 +79,48 @@ export default function UserManage() {
             })
         })
     };
-    const update_user = (uid, props) => {
-        UserAPI.update_user(uid, props).then(data => data.data).then(data => {
+    const update_user = (user, props) => {
+        UserAPI.update_user(user.id, props).then(data => data.data).then(data => {
             if (data.code !== 0) {
                 message.open({
                     type: 'error',
-                    content: `更新用户状态异常：${data.message}`,
+                    content: `更新用户 ${user.username} 异常：${data.message}`,
                     duration: 3,
                 })
                 return
             }
             message.open({
                 type: 'success',
-                content: `更新成功`,
+                content: `用户 ${user.username} 更新成功`,
                 duration: 1.5,
             })
         }).catch((e) => {
             message.open({
                 type: 'error',
-                content: `更新异常：${e.message}`,
+                content: `更新用户 ${user.username} 异常：${e.message}`,
                 duration: 3,
             })
         })
     };
+    useEffect(() => {
+        RoleAPI.get_roles().then(data => data.data).then(data => {
+            if (data.code !== 0) {
+                message.open({
+                    type: 'error',
+                    content: `获取角色列表异常：${data.message}`,
+                    duration: 2,
+                });
+                return
+            }
+            const roles = data.data.map(role => {
+                return {
+                    ...role,
+                    key: role.id,
+                }
+            });
+            setRoles(roles);
+        })
+    }, []);
     useEffect(() => {
         get_users();
     }, [query, pageSize, pageNum]);
@@ -140,18 +166,37 @@ export default function UserManage() {
             title: '允许登录',
             dataIndex: 'enable',
             render: (_, record) => {
-                const disabled = record.created_by === 'system'
+                const disabled = record.created_by === 'system';
                 return (
                     <Space size="middle">
                         <Switch
                             defaultChecked={record.enable}
                             disabled={disabled}
                             onClick={(v) => {
-                                update_user(record.id, {type: 'enable', enable: v,});
+                                update_user(record, {type: 'enable', enable: v,});
                             }}
                         />
                     </Space>
                 )
+            },
+        },
+        {
+            title: '操作',
+            render: (_, record) => {
+                const disabled = record.created_by === 'system';
+                return (<Space size="middle">
+                    <Button
+                        type="text"
+                        className="text-blue-900"
+                        disabled={disabled}
+                        onClick={() => {
+                            setSelectedTags(record.roles.map(role => role.name));
+                            setIsModalOpen(true);
+                        }}
+                    >
+                        角色调整
+                    </Button>
+                </Space>)
             },
         },
     ].map((item, idx) => {
@@ -162,6 +207,35 @@ export default function UserManage() {
         }
     });
     return <>
+        <Modal
+            title="角色列表"
+            open={isModalOpen}
+            onOk={(v) => {
+                setIsModalOpen(false);
+            }}
+            confirmLoading={modalConfirmLoading}
+            onCancel={(v) => {
+                setIsModalOpen(false);
+            }}
+        >
+            {
+                roles.map(role => (
+                    <CheckableTag
+                        key={role.name}
+                        checked={selectedTags.includes(role.name)}
+                        onChange={(checked) => {
+                            if (checked) {
+                                setSelectedTags(selectedTags.concat([role.name]))
+                            } else {
+                                setSelectedTags(selectedTags.filter(v => v !== role.name))
+                            }
+                        }}
+                    >
+                        {role.alias}/{role.name}
+                    </CheckableTag>
+                ))
+            }
+        </Modal>
         <div className="p-3">
             <TableSearch
                 onFinish={(values) => setQuery(values)}
@@ -177,6 +251,7 @@ export default function UserManage() {
                     ...pageInfo,
                     showSizeChanger: true,
                     showQuickJumper: false,
+                    showTotal: (total) => `总计 ${total} 条数据`,
                     onChange: (page, pageSize) => {
                         setPageInfo({
                             current: page,
