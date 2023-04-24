@@ -38,6 +38,7 @@ export default function UserManage() {
     const [curUser, setCurUser] = useState({roles: []});
     const [selectedTags, setSelectedTags] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [addUserModalOpen, setAddUserModalOpen] = useState(false);
     const [modalConfirmLoading, setModalConfirmLoading] = useState(false);
     const [pageInfo, setPageInfo] = useState({
         current: 1,
@@ -238,10 +239,72 @@ export default function UserManage() {
                 ))
             }
         </Modal>
+        <Modal
+            title="新增用户"
+            okType="default"
+            open={addUserModalOpen}
+            onOk={() => {
+            }}
+            confirmLoading={modalConfirmLoading}
+            onCancel={() => {
+                setAddUserModalOpen(false);
+            }}
+        >
+            <TableSearch
+                colSpan={24}
+                fields={[
+                    {
+                        type: 'text',
+                        name: 'username',
+                        label: '英文名',
+                        rules: [
+                            {
+                                required: false,
+                            }
+                        ],
+                        placeholder: '请输入英文名',
+                    },
+                    {
+                        type: 'text',
+                        name: 'alias',
+                        label: '中文名',
+                        rules: [
+                            {
+                                required: false,
+                            }
+                        ],
+                        placeholder: '请输入中文名',
+                    },
+                ]}
+            />
+        </Modal>
         <div className="p-3">
             <TableSearch
                 onFinish={(values) => setQuery(values)}
                 fields={searchFields}
+                FooterComponent={({form}) => {
+                    return (
+                        <div className='flex'>
+                            <Button className="bg-sky-400 text-white" type="primary" htmlType="submit">
+                                查询
+                            </Button>
+                            <Button
+                                className="mx-1"
+                                onClick={() => form.resetFields()}
+                            >
+                                重置
+                            </Button>
+                            <div className='flex-1'/>
+                            <Button className="bg-sky-400 text-white" type="primary"
+                                    onClick={() => {
+                                        setAddUserModalOpen(true);
+                                    }}
+                            >
+                                新增用户
+                            </Button>
+                        </div>
+                    )
+                }}
             />
             <Divider/>
             <Table
