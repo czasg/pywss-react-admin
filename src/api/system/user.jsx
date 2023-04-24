@@ -13,6 +13,16 @@ class UserAPI {
         })
     }
 
+    update_user(uid, props) {
+        return request.request({
+            method: 'POST',
+            url: `/api/system/user/${uid}`,
+            data: {
+                ...props
+            }
+        })
+    }
+
     get_users(props) {
         return request.request({
             method: 'GET',

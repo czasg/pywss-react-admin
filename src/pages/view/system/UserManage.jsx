@@ -105,14 +105,14 @@ export default function UserManage() {
                     type: 'error',
                     content: `获取用户列表异常：${data.message}`,
                     duration: 2,
-                })
+                });
                 return
             }
             const users = data.data.data.map(user => {
                 return {
                     ...user, key: user.id,
                 }
-            })
+            });
             setUsers(users);
             setPageInfo({
                 current: pageInfo.current,
@@ -127,7 +127,7 @@ export default function UserManage() {
                 duration: 3,
             })
         })
-    }
+    };
     useEffect(() => {
         get_users();
     }, [query, pageSize, pageNum]);
@@ -177,7 +177,14 @@ export default function UserManage() {
                     <Switch
                         checked={record.enable}
                         onClick={(v) => {
-                            console.log(v)
+                            record.enable = !record.enable;
+                            console.log(v);
+                            UserAPI.update_user(record.id, {
+                                type: 'enable',
+                                enable: v,
+                            }).then(() => {
+                                get_users();
+                            })
                         }}
                     />
                 </Space>
