@@ -35,6 +35,7 @@ export default function UserManage() {
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
     const [roles, setRoles] = useState([]);
+    const [curUser, setCurUser] = useState({roles: []});
     const [selectedTags, setSelectedTags] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalConfirmLoading, setModalConfirmLoading] = useState(false);
@@ -191,6 +192,7 @@ export default function UserManage() {
                         disabled={disabled}
                         onClick={() => {
                             setSelectedTags(record.roles.map(role => role.name));
+                            setCurUser(record);
                             setIsModalOpen(true);
                         }}
                     >
@@ -209,9 +211,35 @@ export default function UserManage() {
     return <>
         <Modal
             title="角色列表"
+            okType="default"
             open={isModalOpen}
             onOk={(v) => {
-                setIsModalOpen(false);
+                setModalConfirmLoading(true);
+                UserAPI.update_user_role(curUser.id, selectedTags).then(data => data.data).then(data => {
+                    setModalConfirmLoading(false);
+                    if (data.code !== 0) {
+                        message.open({
+                            type: 'error',
+                            content: `更新角色异常：${data.message}`,
+                            duration: 2,
+                        });
+                        return
+                    }
+                    setIsModalOpen(false);
+                    message.open({
+                        type: 'success',
+                        content: `更新角色成功`,
+                        duration: 2,
+                    });
+                    get_users();
+                }).catch(e => {
+                    setModalConfirmLoading(false);
+                    message.open({
+                        type: 'error',
+                        content: `更新角色异常：${e.message}`,
+                        duration: 2,
+                    });
+                });
             }}
             confirmLoading={modalConfirmLoading}
             onCancel={(v) => {
