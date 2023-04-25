@@ -46,6 +46,25 @@ class MenuTool {
             return value.enable.some(role => rs.has(role));
         })
     }
+
+    treeItemFromAppComponents(values, prefix = "") {
+        return values.map((value) => {
+            let key = [prefix, value.path].filter(v => v).join("/");
+            let item = {
+                title: value.label,
+                key: key,
+                children: undefined,
+            }
+            if (value.children !== undefined) {
+                if (value.childrenIgnore) {
+                    item.children = undefined
+                } else {
+                    item.children = this.treeItemFromAppComponents(value.children, key)
+                }
+            }
+            return item
+        });
+    }
 }
 
 export default new MenuTool();

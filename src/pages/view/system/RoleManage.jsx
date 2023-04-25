@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from "react";
 import TableSearch from "../../../components/antd/TableSearch";
-import {Divider, Tag, Space, Table, message, Button, Switch, Modal, Form, Input} from "antd";
-import UserAPI from "../../../api/system/user";
+import {Divider, Tag, Space, Table, message, Button, Tree, Modal, Form, Input} from "antd";
 import RoleAPI from "../../../api/system/role";
+import UserAPI from "../../../api/system/user";
 import jwt from "../../../utils/jwt";
-
-const {CheckableTag} = Tag;
+import {appComponents} from "../../../route";
+import menuTool from "../../../utils/menu";
 
 const searchFields = [
     {
         type: 'text',
-        name: 'username',
+        name: 'name',
         label: '英文名',
         rules: [
             {
@@ -32,42 +32,71 @@ const searchFields = [
     },
 ];
 
-export default function UserManage() {
+export default function RoleManage() {
     const [loading, setLoading] = useState(true);
-    const [users, setUsers] = useState([]);
     const [roles, setRoles] = useState([]);
-    const [curUser, setCurUser] = useState({roles: []});
-    const [selectedTags, setSelectedTags] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [addUserModalOpen, setAddUserModalOpen] = useState(false);
-    const [modalConfirmLoading, setModalConfirmLoading] = useState(false);
     const [pageInfo, setPageInfo] = useState({
         current: 1,
         pageSize: 10,
         total: 0,
     });
+    const [curRole, setCurRole] = useState({roles: []});
     const [query, setQuery] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [addRoleModalOpen, setAddRoleModalOpen] = useState(false);
+    const [modalConfirmLoading, setModalConfirmLoading] = useState(false);
     const pageSize = pageInfo.pageSize;
     const pageNum = pageInfo.current - 1;
-    const get_users = () => {
+    const add_role = (props) => {
+        setModalConfirmLoading(true);
+        RoleAPI.add_role(props).then(data => data.data).then(data => {
+            setModalConfirmLoading(false);
+            if (data.code !== 0) {
+                message.open({
+                    type: 'error',
+                    content: `创建角色 ${props.name} 异常：${data.message}`,
+                    duration: 3,
+                })
+                return
+            }
+            setAddRoleModalOpen(false);
+            message.open({
+                type: 'success',
+                content: `创建角色 ${props.name} 成功`,
+                duration: 1.5,
+            });
+            if (addRoleModalOpen) {
+                get_roles();
+            }
+            form.resetFields();
+        }).catch((e) => {
+            setModalConfirmLoading(false);
+            message.open({
+                type: 'error',
+                content: `创建角色 ${props.name} 异常：${e.message}`,
+                duration: 3,
+            })
+        })
+    };
+    const get_roles = () => {
         setLoading(true);
-        UserAPI.get_users({...query, pageSize, pageNum}).then(data => data.data).then(data => {
+        RoleAPI.get_roles({...query, pageSize, pageNum}).then(data => data.data).then(data => {
             setLoading(false);
             if (data.code !== 0) {
                 message.open({
                     type: 'error',
-                    content: `获取用户列表异常：${data.message}`,
+                    content: `获取角色列表异常：${data.message}`,
                     duration: 2,
                 });
                 return
             }
-            const users = data.data.data.map(user => {
+            const roles = data.data.data.map(user => {
                 return {
                     ...user,
                     key: user.id,
                 }
             });
-            setUsers(users);
+            setRoles(roles);
             setPageInfo({
                 current: pageInfo.current,
                 pageSize: pageInfo.pageSize,
@@ -77,19 +106,19 @@ export default function UserManage() {
             setLoading(false);
             message.open({
                 type: 'error',
-                content: `获取用户列表异常：${e.message}`,
+                content: `获取角色列表异常：${e.message}`,
                 duration: 3,
             })
         })
     };
-    const update_user = (user, type, props) => {
+    const update_permission = (role, type, props) => {
         setModalConfirmLoading(true);
-        UserAPI.update_user(user.id, type, props).then(data => data.data).then(data => {
+        RoleAPI.update_role(role.id, type, props).then(data => data.data).then(data => {
             setModalConfirmLoading(false);
             if (data.code !== 0) {
                 message.open({
                     type: 'error',
-                    content: `更新用户 ${user.username} 异常：${data.message}`,
+                    content: `更新角色 ${role.name} 异常：${data.message}`,
                     duration: 3,
                 })
                 return
@@ -97,66 +126,22 @@ export default function UserManage() {
             setIsModalOpen(false);
             message.open({
                 type: 'success',
-                content: `用户 ${user.username} 更新成功`,
+                content: `角色 ${role.name} 更新成功`,
                 duration: 1.5,
             });
             if (isModalOpen) {
-                get_users();
+                get_roles();
             }
         }).catch((e) => {
             setModalConfirmLoading(false);
             message.open({
                 type: 'error',
-                content: `更新用户 ${user.username} 异常：${e.message}`,
+                content: `更新角色 ${role.name} 异常：${e.message}`,
                 duration: 3,
             })
         })
     };
-    const add_user = (props) => {
-        setModalConfirmLoading(true);
-        UserAPI.add_user(props).then(data => data.data).then(data => {
-            setModalConfirmLoading(false);
-            if (data.code !== 0) {
-                message.open({
-                    type: 'error',
-                    content: `创建用户 ${props.username} 异常：${data.message}`,
-                    duration: 3,
-                })
-                return
-            }
-            setAddUserModalOpen(false);
-            message.open({
-                type: 'success',
-                content: `创建用户 ${props.username} 成功`,
-                duration: 1.5,
-            });
-            if (addUserModalOpen) {
-                get_users();
-            }
-            form.resetFields();
-        }).catch((e) => {
-            setModalConfirmLoading(false);
-            message.open({
-                type: 'error',
-                content: `创建用户 ${props.username} 异常：${e.message}`,
-                duration: 3,
-            })
-        })
-    };
-    useEffect(() => {
-        RoleAPI.get_roles({pageSize: 1000}).then(data => data.data).then(data => {
-            if (data.code !== 0) {
-                message.open({
-                    type: 'error',
-                    content: `获取角色列表异常：${data.message}`,
-                    duration: 2,
-                });
-                return
-            }
-            setRoles(data.data.data);
-        })
-    }, []);
-    useEffect(get_users, [query, pageSize, pageNum]);
+    useEffect(get_roles, [query, pageSize, pageNum]);
     const columns = [
         {
             title: 'ID',
@@ -164,21 +149,25 @@ export default function UserManage() {
         },
         {
             title: '英文名',
-            dataIndex: 'username',
+            dataIndex: 'name',
         },
         {
             title: '中文名',
             dataIndex: 'alias',
         },
         {
-            title: '角色',
-            dataIndex: 'roles',
+            title: '权限',
+            dataIndex: 'permission',
             className: "max-w-xl",
             render: (_, record) => {
+                let ps = [];
+                if (record.permission !== "") {
+                    ps = record.permission.split(',')
+                }
                 return <Space wrap>
                     {
-                        record.roles.map((role, idx) => {
-                            return <Tag color="blue" key={idx}>{role.alias}/{role.name}</Tag>
+                        ps.map((v, idx) => {
+                            return <Tag color="blue" key={idx}>{v}</Tag>
                         })
                     }
                 </Space>
@@ -197,41 +186,21 @@ export default function UserManage() {
             dataIndex: 'created_by',
         },
         {
-            title: '允许登录',
-            dataIndex: 'enable',
-            render: (_, record) => {
-                const disabled = record.created_by === 'system';
-                return (
-                    <Space size="middle">
-                        <Switch
-                            defaultChecked={record.enable}
-                            disabled={disabled}
-                            onClick={(v) => {
-                                update_user(record, 'enable', {enable: v});
-                                setLoading(true);
-                                setTimeout(get_users, 300);
-                            }}
-                        />
-                    </Space>
-                )
-            },
-        },
-        {
             title: '操作',
             render: (_, record) => {
-                const disabled = record.created_by === 'system';
+                const disabled = record.name === 'admin';
                 return (<Space size="middle">
                     <Button
                         type="text"
                         className="text-blue-900"
                         disabled={disabled}
                         onClick={() => {
-                            setSelectedTags(record.roles.map(role => role.name));
-                            setCurUser(record);
+                            setCheckedKeys(record.permission.split(','));
+                            setCurRole(record);
                             setIsModalOpen(true);
                         }}
                     >
-                        角色调整
+                        权限调整
                     </Button>
                 </Space>)
             },
@@ -244,15 +213,17 @@ export default function UserManage() {
         }
     });
     const [form] = Form.useForm();
+    const [checkedKeys, setCheckedKeys] = useState(['0-0-0']);
+    const treeData = menuTool.treeItemFromAppComponents(appComponents, '/app');
     return <>
         <Modal
-            title="角色列表"
+            title={`${curRole.name} 权限列表`}
             okType="default"
             open={isModalOpen}
             onOk={() => {
                 setLoading(true);
                 setTimeout(() => {
-                    update_user(curUser, 'role', {roles: selectedTags});
+                    update_permission(curRole, 'permission', {permission: checkedKeys});
                 }, 300);
             }}
             confirmLoading={modalConfirmLoading}
@@ -260,36 +231,29 @@ export default function UserManage() {
                 setIsModalOpen(false);
             }}
         >
-            {
-                roles.map(role => (
-                    <CheckableTag
-                        key={role.name}
-                        checked={selectedTags.includes(role.name)}
-                        onChange={(checked) => {
-                            if (checked) {
-                                setSelectedTags(selectedTags.concat([role.name]))
-                            } else {
-                                setSelectedTags(selectedTags.filter(v => v !== role.name))
-                            }
-                        }}
-                        className="my-2"
-                    >
-                        {role.alias}/{role.name}
-                    </CheckableTag>
-                ))
-            }
+            <Divider/>
+            <Tree
+                checkable
+                defaultExpandAll={true}
+                treeData={treeData}
+                checkedKeys={checkedKeys}
+                onCheck={(checkedKeysValue) => {
+                    setCheckedKeys(checkedKeysValue);
+                }}
+            >
+            </Tree>
         </Modal>
         <Modal
-            title="新增用户"
+            title="新增角色"
             okType="default"
-            open={addUserModalOpen}
+            open={addRoleModalOpen}
             onOk={() => {
                 form.submit();
             }}
             confirmLoading={modalConfirmLoading}
             onCancel={() => {
                 form.resetFields();
-                setAddUserModalOpen(false);
+                setAddRoleModalOpen(false);
             }}
         >
             <Divider/>
@@ -299,17 +263,9 @@ export default function UserManage() {
                     span: 4,
                 }}
                 onFinish={(values) => {
-                    if (values.password !== values.ensure_password) {
-                        message.open({
-                            type: 'error',
-                            content: `两次密码不一致`,
-                            duration: 2,
-                        });
-                        return
-                    }
                     setLoading(true);
                     const {token} = jwt.getToken();
-                    add_user({...values, created_by: token.username});
+                    add_role({...values, created_by: token.username});
                 }}
             >
                 <Form.Item
@@ -326,7 +282,7 @@ export default function UserManage() {
                 </Form.Item>
                 <Form.Item
                     label="英文名"
-                    name="username"
+                    name="name"
                     rules={[
                         {
                             required: true,
@@ -335,30 +291,6 @@ export default function UserManage() {
                     ]}
                 >
                     <Input/>
-                </Form.Item>
-                <Form.Item
-                    label="密码"
-                    name="password"
-                    rules={[
-                        {
-                            required: true,
-                            message: '密码不能为空!',
-                        },
-                    ]}
-                >
-                    <Input.Password/>
-                </Form.Item>
-                <Form.Item
-                    label="确认密码"
-                    name="ensure_password"
-                    rules={[
-                        {
-                            required: true,
-                            message: '密码不能为空!',
-                        },
-                    ]}
-                >
-                    <Input.Password/>
                 </Form.Item>
             </Form>
         </Modal>
@@ -381,10 +313,10 @@ export default function UserManage() {
                             <div className='flex-1'/>
                             <Button className="bg-sky-400 text-white" type="primary"
                                     onClick={() => {
-                                        setAddUserModalOpen(true);
+                                        setAddRoleModalOpen(true);
                                     }}
                             >
-                                新增用户
+                                新增角色
                             </Button>
                         </div>
                     )
@@ -394,7 +326,7 @@ export default function UserManage() {
             <Table
                 loading={loading}
                 columns={columns}
-                dataSource={users}
+                dataSource={roles}
                 size="middle"
                 pagination={{
                     ...pageInfo,

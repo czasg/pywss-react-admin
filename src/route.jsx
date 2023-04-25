@@ -18,6 +18,7 @@ import App from "./pages/App";
 import Login from "./pages/Login";
 import TemplateTaskList from "./pages/view/template/TaskList";
 import ScanTaskListView from "./pages/view/demo/ScanTaskListView";
+import RoleManageView from "./pages/view/system/RoleManage";
 import UserManageView from "./pages/view/system/UserManage";
 import jwt from "./utils/jwt";
 
@@ -77,15 +78,9 @@ const appComponents = [
             },
             {
                 path: "role-management",
-                Component: ScanTaskListView,
+                Component: RoleManageView,
                 label: "角色管理",
                 icon: <UserSwitchOutlined/>,
-            },
-            {
-                path: "authority-management",
-                Component: ScanTaskListView,
-                label: "权限管理",
-                icon: <UsergroupAddOutlined/>,
             },
         ]
     },
@@ -120,4 +115,5 @@ const pages = [
     },
 ];
 
+export {appComponents};
 export const router = createBrowserRouter(pages);
