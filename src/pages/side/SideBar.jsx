@@ -25,6 +25,9 @@ export default function SideBar({sideItems, collapsedOnlyOne = true}) {
             setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
         }
     };
+    if (token.roles.indexOf("admin") === -1) {
+        sideItems = menuTool.sideItemsFilterByRoles(sideItems, token.roles);
+    }
     return (
         <div className="h-screen overflow-auto fixed left-0 top-0 bottom-0 w-56"
              style={{
@@ -45,7 +48,7 @@ export default function SideBar({sideItems, collapsedOnlyOne = true}) {
                 theme="dark"
                 openKeys={openKeys}
                 onOpenChange={onOpenChange}
-                items={menuTool.sideItemsFilterByAuthority(sideItems, token.roles)}
+                items={sideItems}
                 onClick={({key}) => {
                     navigate(key);
                 }}

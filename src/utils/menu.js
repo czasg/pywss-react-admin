@@ -25,7 +25,29 @@ class MenuTool {
         });
     }
 
-    sideItemsFilterByAuthority(values, roles) {
+    sideItemsFilterByRoles(values, roles) {
+        if (roles === undefined || values === undefined) {
+            return values
+        }
+        if (roles.length < 1) {
+            return values
+        }
+        const rs = new Set(roles);
+        if (rs.has('admin')) {
+            return values
+        }
+        return values.filter(value => {
+            if (value.children !== undefined) {
+                value.children = this.sideItemsFilterByAuthority(value.children, roles)
+            }
+            if (value.enable === undefined) {
+                return true
+            }
+            return value.enable.some(role => rs.has(role));
+        })
+    }
+
+    sideItemsFilterByAuthority(values, roles, permissions = []) {
         if (roles === undefined || values === undefined) {
             return values
         }
