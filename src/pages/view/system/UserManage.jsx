@@ -206,6 +206,8 @@ export default function UserManage() {
                             disabled={disabled}
                             onClick={(v) => {
                                 update_user(record, 'enable', {enable: v});
+                                setLoading(true);
+                                setTimeout(get_users, 300);
                             }}
                         />
                     </Space>
