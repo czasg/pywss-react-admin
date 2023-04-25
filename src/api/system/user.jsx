@@ -23,15 +23,15 @@ class UserAPI {
         })
     }
 
-    // update_user_role(uid, roles) {
-    //     return request.request({
-    //         method: 'POST',
-    //         url: `/api/system/user/${uid}/role`,
-    //         data: {
-    //             roles
-    //         }
-    //     })
-    // }
+    add_user(props) {
+        return request.request({
+            method: 'POST',
+            url: "/api/system/user",
+            data: {
+                ...props
+            }
+        })
+    }
 
     get_users(props) {
         return request.request({

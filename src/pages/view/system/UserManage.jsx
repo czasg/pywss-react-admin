@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import TableSearch from "../../../components/antd/TableSearch";
-import {Divider, Tag, Space, Table, message, Button, Switch, Modal} from "antd";
+import {Divider, Tag, Space, Table, message, Button, Switch, Modal, Form, Input} from "antd";
 import UserAPI from "../../../api/system/user";
 import RoleAPI from "../../../api/system/role";
 
@@ -111,6 +111,37 @@ export default function UserManage() {
             })
         })
     };
+    const add_user = (props) => {
+        setModalConfirmLoading(true);
+        UserAPI.add_user(props).then(data => data.data).then(data => {
+            setModalConfirmLoading(false);
+            if (data.code !== 0) {
+                message.open({
+                    type: 'error',
+                    content: `创建用户 ${props.username} 异常：${data.message}`,
+                    duration: 3,
+                })
+                return
+            }
+            setAddUserModalOpen(false);
+            message.open({
+                type: 'success',
+                content: `创建用户 ${props.username} 成功`,
+                duration: 1.5,
+            });
+            if (addUserModalOpen) {
+                get_users();
+            }
+            form.resetFields();
+        }).catch((e) => {
+            setModalConfirmLoading(false);
+            message.open({
+                type: 'error',
+                content: `创建用户 ${props.username} 异常：${e.message}`,
+                duration: 3,
+            })
+        })
+    };
     useEffect(() => {
         RoleAPI.get_roles().then(data => data.data).then(data => {
             if (data.code !== 0) {
@@ -208,13 +239,17 @@ export default function UserManage() {
             align: 'center',
         }
     });
+    const [form] = Form.useForm();
     return <>
         <Modal
             title="角色列表"
             okType="default"
             open={isModalOpen}
             onOk={() => {
-                update_user(curUser, 'role', {roles: selectedTags});
+                setLoading(true);
+                setTimeout(() => {
+                    update_user(curUser, 'role', {roles: selectedTags});
+                }, 300);
             }}
             confirmLoading={modalConfirmLoading}
             onCancel={() => {
@@ -244,39 +279,82 @@ export default function UserManage() {
             okType="default"
             open={addUserModalOpen}
             onOk={() => {
+                form.submit();
             }}
             confirmLoading={modalConfirmLoading}
             onCancel={() => {
+                form.resetFields();
                 setAddUserModalOpen(false);
             }}
         >
-            <TableSearch
-                colSpan={24}
-                fields={[
-                    {
-                        type: 'text',
-                        name: 'username',
-                        label: '英文名',
-                        rules: [
-                            {
-                                required: false,
-                            }
-                        ],
-                        placeholder: '请输入英文名',
-                    },
-                    {
-                        type: 'text',
-                        name: 'alias',
-                        label: '中文名',
-                        rules: [
-                            {
-                                required: false,
-                            }
-                        ],
-                        placeholder: '请输入中文名',
-                    },
-                ]}
-            />
+            <Divider/>
+            <Form
+                form={form}
+                labelCol={{
+                    span: 4,
+                }}
+                onFinish={(values) => {
+                    if (values.password !== values.ensure_password) {
+                        message.open({
+                            type: 'error',
+                            content: `两次密码不一致`,
+                            duration: 2,
+                        });
+                        return
+                    }
+                    setLoading(true);
+                    add_user(values);
+                }}
+            >
+                <Form.Item
+                    label="中文名"
+                    name="alias"
+                    rules={[
+                        {
+                            required: true,
+                            message: '中文名不能为空!',
+                        },
+                    ]}
+                >
+                    <Input/>
+                </Form.Item>
+                <Form.Item
+                    label="英文名"
+                    name="username"
+                    rules={[
+                        {
+                            required: true,
+                            message: '英文名不能为空!',
+                        },
+                    ]}
+                >
+                    <Input/>
+                </Form.Item>
+                <Form.Item
+                    label="密码"
+                    name="password"
+                    rules={[
+                        {
+                            required: true,
+                            message: '密码不能为空!',
+                        },
+                    ]}
+                >
+                    <Input.Password/>
+                </Form.Item>
+                <Form.Item
+                    label="确认密码"
+                    name="ensure_password"
+                    rules={[
+                        {
+                            required: true,
+                            message: '密码不能为空!',
+                        },
+                    ]}
+                >
+                    <Input.Password/>
+                </Form.Item>
+            </Form>
         </Modal>
         <div className="p-3">
             <TableSearch
