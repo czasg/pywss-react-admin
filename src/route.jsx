@@ -123,5 +123,7 @@ const pages = [
     },
 ];
 
-export {appComponents};
+const appComponentsMap = menuTool.appComponentsMap(appComponents, "/app");
+
+export {appComponents, appComponentsMap};
 export const router = createBrowserRouter(pages);

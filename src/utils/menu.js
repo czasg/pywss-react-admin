@@ -25,26 +25,19 @@ class MenuTool {
         });
     }
 
-    sideItemsFilterByRoles(values, roles) {
-        if (roles === undefined || values === undefined) {
-            return values
-        }
-        if (roles.length < 1) {
-            return values
-        }
-        const rs = new Set(roles);
-        if (rs.has('admin')) {
-            return values
-        }
-        return values.filter(value => {
+    appComponentsMap(values, prefix = "") {
+        let resp = {};
+        values.forEach(value => {
+            let key = [prefix, value.path].filter(v => v).join("/");
+            resp[key] = value
             if (value.children !== undefined) {
-                value.children = this.sideItemsFilterByAuthority(value.children, roles)
+                resp = {
+                    ...resp,
+                    ...this.appComponentsMap(value.children, key)
+                }
             }
-            if (value.enable === undefined) {
-                return true
-            }
-            return value.enable.some(role => rs.has(role));
-        })
+        });
+        return resp;
     }
 
     sideItemsFilterByAuthority(values, permissions = []) {

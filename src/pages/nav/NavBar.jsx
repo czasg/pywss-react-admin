@@ -1,8 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {UserOutlined} from '@ant-design/icons';
 import {useNavigate, useLoaderData} from "react-router-dom";
-import {Avatar, Dropdown, message} from 'antd';
+import {Avatar, Dropdown, message, Breadcrumb} from 'antd';
 import jwt from "../../utils/jwt";
+import {useLocation, Link} from "react-router-dom";
+import {appComponentsMap} from "../../route";
 
 const items = [
     {
@@ -32,6 +34,7 @@ const items = [
 });
 
 export default function NavBar() {
+    let location = useLocation();
     const {token} = useLoaderData();
     const navigate = useNavigate();
     const handleMenuClick = ({key}) => {
@@ -44,9 +47,34 @@ export default function NavBar() {
             }
         }
     };
+    const pathSnippets = location.pathname.replace('/app', '').split('/').filter((i) => i);
+
+    const breadcrumbItems = [
+        {
+            title: '导航',
+        },
+        {
+            type: 'separator',
+            separator: '>',
+        },
+    ];
+    pathSnippets.forEach((path, index) => {
+        const url = `/app/${pathSnippets.slice(0, index + 1).join('/')}`;
+        if (index !== 0) {
+            breadcrumbItems.push({
+                type: 'separator',
+            })
+        }
+        breadcrumbItems.push({
+            key: url,
+            // title: <Link to={url}>{appComponentsMap[url].label}</Link>,
+            title: appComponentsMap[url].label,
+        })
+    })
     return (
         <>
             <div className="bg-white ml-56 p-3 h-16 flex items-center">
+                <Breadcrumb separator="" items={breadcrumbItems}/>
                 <div className="flex-1">
                 </div>
                 <UserOutlined className="mr-1"/>
