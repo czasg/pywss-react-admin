@@ -9,9 +9,9 @@ import {
     UserOutlined,
     UserAddOutlined,
     UserSwitchOutlined,
-    UsergroupAddOutlined,
+    SmileOutlined,
 } from '@ant-design/icons';
-import {message} from 'antd';
+import {message, Result} from 'antd';
 
 import menuTool from "./utils/menu";
 import App from "./pages/App";
@@ -83,7 +83,17 @@ const appComponents = [
         ]
     },
 ];
-console.log(menuTool.sideItemsFromAppComponents(appComponents), "app")
+
+const implicitComponents = [
+    {
+        path: "",
+        element: <Result
+            icon={<SmileOutlined/>}
+            title="Welcome to here!"
+        />,
+    },
+]
+
 const pages = [
     {
         // 应用
@@ -91,7 +101,7 @@ const pages = [
         element: <App
             sideItems={menuTool.sideItemsFromAppComponents(appComponents)} // 侧边栏元素
         />,
-        children: appComponents,
+        children: implicitComponents.concat(appComponents),
         loader: componentLoader,
     },
     {
