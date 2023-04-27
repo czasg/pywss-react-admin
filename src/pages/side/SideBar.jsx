@@ -1,11 +1,12 @@
 import {Menu} from 'antd';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScanOutlined} from '@ant-design/icons';
 import {
     useNavigate,
     useLoaderData,
 } from "react-router-dom";
 import menuTool from "../../utils/menu";
+import UserAPI from "../../api/system/user";
 
 
 export default function SideBar({sideItems, collapsedOnlyOne = true}) {
@@ -25,9 +26,29 @@ export default function SideBar({sideItems, collapsedOnlyOne = true}) {
             setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
         }
     };
+    const [permission, setPermission] = useState([]);
     if (token.roles.indexOf("admin") === -1) {
-        sideItems = menuTool.sideItemsFilterByRoles(sideItems, token.roles);
+        sideItems = menuTool.sideItemsFilterByAuthority(sideItems, permission);
     }
+    useEffect(() => {
+        UserAPI.get_user_by_uid(token.uid).then(data => data.data).then(data => {
+            if (data.code !== 0) {
+                return
+            }
+            let perms = [];
+            data.data.roles.forEach(v => {
+                v.permission.forEach(vv => {
+                    if (perms.indexOf(vv) === -1) {
+                        perms.push(vv)
+                    }
+                })
+            });
+            setPermission(perms);
+        });
+        return () => {
+            setPermission([]);
+        }
+    }, []);
     return (
         <div className="h-screen overflow-auto fixed left-0 top-0 bottom-0 w-56"
              style={{

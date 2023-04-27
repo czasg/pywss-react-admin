@@ -47,26 +47,21 @@ class MenuTool {
         })
     }
 
-    sideItemsFilterByAuthority(values, roles, permissions = []) {
-        if (roles === undefined || values === undefined) {
-            return values
-        }
-        if (roles.length < 1) {
-            return values
-        }
-        const rs = new Set(roles);
-        if (rs.has('admin')) {
-            return values
-        }
-        return values.filter(value => {
+    sideItemsFilterByAuthority(values, permissions = []) {
+        let resp = [];
+        values.forEach(value => {
             if (value.children !== undefined) {
-                value.children = this.sideItemsFilterByAuthority(value.children, roles)
+                const children = this.sideItemsFilterByAuthority(value.children, permissions)
+                if (children.length > 0) {
+                    resp.push({...value, children: children});
+                    return
+                }
             }
-            if (value.enable === undefined) {
-                return true
+            if (permissions.indexOf(value.key) !== -1) {
+                resp.push({...value});
             }
-            return value.enable.some(role => rs.has(role));
         })
+        return resp
     }
 
     treeItemFromAppComponents(values, prefix = "") {

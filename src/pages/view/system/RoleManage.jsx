@@ -214,7 +214,7 @@ export default function RoleManage() {
     });
     const [form] = Form.useForm();
     const [checkedKeys, setCheckedKeys] = useState(['0-0-0']);
-    const treeData = menuTool.treeItemFromAppComponents(appComponents, '/app');
+    const treeData = menuTool.treeItemFromAppComponents(appComponents);
     return <>
         <Modal
             title={`${curRole.name} 权限列表`}

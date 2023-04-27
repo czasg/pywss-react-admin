@@ -42,6 +42,13 @@ class UserAPI {
             }
         })
     }
+
+    get_user_by_uid(uid) {
+        return request.request({
+            method: 'GET',
+            url: `/api/system/user/${uid}`,
+        })
+    }
 }
 
 export default new UserAPI();

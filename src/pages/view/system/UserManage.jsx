@@ -246,7 +246,7 @@ export default function UserManage() {
     const [form] = Form.useForm();
     return <>
         <Modal
-            title="角色列表"
+            title={`${curUser.username}-角色列表`}
             okType="default"
             open={isModalOpen}
             onOk={() => {
@@ -299,14 +299,6 @@ export default function UserManage() {
                     span: 4,
                 }}
                 onFinish={(values) => {
-                    if (values.password !== values.ensure_password) {
-                        message.open({
-                            type: 'error',
-                            content: `两次密码不一致`,
-                            duration: 2,
-                        });
-                        return
-                    }
                     setLoading(true);
                     const {token} = jwt.getToken();
                     add_user({...values, created_by: token.username});
@@ -356,6 +348,14 @@ export default function UserManage() {
                             required: true,
                             message: '密码不能为空!',
                         },
+                        ({getFieldValue}) => ({
+                            validator(rule,value){
+                                if(!value || getFieldValue('password') === value){
+                                    return Promise.resolve()
+                                }
+                                return Promise.reject("两次密码输入不一致")
+                            }
+                        }),
                     ]}
                 >
                     <Input.Password/>

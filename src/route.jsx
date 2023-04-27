@@ -17,7 +17,6 @@ import menuTool from "./utils/menu";
 import App from "./pages/App";
 import Login from "./pages/Login";
 import TemplateTaskList from "./pages/view/template/TaskList";
-import ScanTaskListView from "./pages/view/demo/ScanTaskListView";
 import RoleManageView from "./pages/view/system/RoleManage";
 import UserManageView from "./pages/view/system/UserManage";
 import jwt from "./utils/jwt";
@@ -68,7 +67,6 @@ const appComponents = [
         path: "system",
         label: "系统管理",
         icon: <SettingOutlined/>,
-        enable: ['admin'],
         children: [
             {
                 path: "user-management",
@@ -85,7 +83,7 @@ const appComponents = [
         ]
     },
 ];
-
+console.log(menuTool.sideItemsFromAppComponents(appComponents), "app")
 const pages = [
     {
         // 应用
