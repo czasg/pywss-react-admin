@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import TableSearch from "../../../components/antd/TableSearch";
+import TableSearch from "../../../components/TableSearch";
 import {Divider, Tag, Space, Table, message, Button, Tree, Modal, Form, Input} from "antd";
 import RoleAPI from "../../../api/system/role";
 import UserAPI from "../../../api/system/user";

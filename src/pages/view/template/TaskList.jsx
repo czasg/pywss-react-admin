@@ -8,7 +8,7 @@ import {
     Divider,
 } from 'antd';
 
-import TableSearch from "../../../components/antd/TableSearch";
+import TableSearch from "../../../components/TableSearch";
 
 const searchFields = [
     {
