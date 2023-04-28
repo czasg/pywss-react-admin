@@ -20,13 +20,14 @@ import TemplateTaskList from "./pages/view/template/TaskList";
 import RoleManageView from "./pages/view/system/RoleManage";
 import UserManageView from "./pages/view/system/UserManage";
 import jwt from "./utils/jwt";
+import UserInfo from "./pages/view/UserInfo";
 
 function componentLoader() {
     const {token, valid} = jwt.getToken();
     if (!valid) {
         jwt.clear();
         message.warning("认证失效，请重新登录！");
-        return redirect("/login")
+        return redirect("/login");
     }
     return {token}
 }
@@ -92,6 +93,12 @@ const implicitComponents = [
             title="Welcome to here!"
         />,
     },
+    {
+        path: "user-info",
+        Component: UserInfo,
+        label: "个人信息",
+        loader: componentLoader,
+    },
 ]
 
 const pages = [
@@ -123,7 +130,7 @@ const pages = [
     },
 ];
 
-const appComponentsMap = menuTool.appComponentsMap(appComponents, "/app");
+const appComponentsMap = menuTool.appComponentsMap(implicitComponents.concat(appComponents), "/app");
 
 export {appComponents, appComponentsMap};
 export const router = createBrowserRouter(pages);

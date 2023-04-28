@@ -248,6 +248,8 @@ export default function UserManage() {
         <Modal
             title={`${curUser.username}-角色列表`}
             okType="default"
+            okText="确认"
+            cancelText="取消"
             open={isModalOpen}
             onOk={() => {
                 setLoading(true);
@@ -281,7 +283,11 @@ export default function UserManage() {
         </Modal>
         <Modal
             title="新增用户"
-            okType="default"
+            okText="确认"
+            cancelText="取消"
+            okButtonProps={{
+                className: "bg-sky-600",
+            }}
             open={addUserModalOpen}
             onOk={() => {
                 form.submit();

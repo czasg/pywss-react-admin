@@ -8,7 +8,12 @@ import {appComponentsMap} from "../../route";
 
 const items = [
     {
-        label: '用户信息',
+        label: '个人信息',
+        extend: {
+            onClick: ({navigate}) => {
+                navigate('/app/user-info');
+            }
+        },
     },
     {
         type: 'divider',

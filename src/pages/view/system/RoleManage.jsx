@@ -218,7 +218,11 @@ export default function RoleManage() {
     return <>
         <Modal
             title={`${curRole.name} 权限列表`}
-            okType="default"
+            okButtonProps={{
+                className: "bg-sky-600",
+            }}
+            okText="确认"
+            cancelText="取消"
             open={isModalOpen}
             onOk={() => {
                 setLoading(true);
@@ -231,7 +235,7 @@ export default function RoleManage() {
                 setIsModalOpen(false);
             }}
         >
-            <Divider/>
+            <Divider className="mb-3"/>
             <Tree
                 checkable
                 defaultExpandAll={true}
@@ -245,7 +249,11 @@ export default function RoleManage() {
         </Modal>
         <Modal
             title="新增角色"
-            okType="default"
+            okButtonProps={{
+                className: "bg-sky-600",
+            }}
+            okText="确认"
+            cancelText="取消"
             open={addRoleModalOpen}
             onOk={() => {
                 form.submit();
