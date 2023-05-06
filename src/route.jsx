@@ -21,6 +21,7 @@ import RoleManageView from "./pages/view/system/RoleManage";
 import UserManageView from "./pages/view/system/UserManage";
 import jwt from "./utils/jwt";
 import UserInfo from "./pages/view/UserInfo";
+import AsyncTask from "./pages/view/async_task/AsyncTask";
 
 function componentLoader() {
     const {token, valid} = jwt.getToken();
@@ -48,7 +49,7 @@ const appComponents = [
         children: [
             {
                 path: "task",
-                Component: TemplateTaskList,
+                Component: AsyncTask,
                 label: "任务管理",
                 icon: <ScanOutlined/>,
                 childrenIgnore: true,
