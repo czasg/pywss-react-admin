@@ -1,9 +1,9 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {UserOutlined} from '@ant-design/icons';
 import {useNavigate, useLoaderData} from "react-router-dom";
 import {Avatar, Dropdown, message, Breadcrumb} from 'antd';
 import jwt from "../../utils/jwt";
-import {useLocation, Link} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import {appComponentsMap} from "../../route";
 
 const items = [
@@ -53,7 +53,6 @@ export default function NavBar() {
         }
     };
     const pathSnippets = location.pathname.replace('/app', '').split('/').filter((i) => i);
-
     const breadcrumbItems = [
         {
             title: '导航',
@@ -82,11 +81,11 @@ export default function NavBar() {
                 <div className="flex-1">
                 </div>
                 <UserOutlined className="mr-1"/>
-                <div className="mr-2">
+                <div className="mr-2 select-none">
                     {token.username}
                 </div>
                 <Dropdown
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:border-sky-800"
                     menu={{
                         items,
                         onClick: handleMenuClick,
