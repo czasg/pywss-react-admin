@@ -253,10 +253,14 @@ export default function UserInfo() {
                 <Image
                     width={200}
                     src="/src/static/cat.png"
+                    className="shadow-2xl"
                 />
             </Row>
             <Divider/>
             <Row>
+                <Col span={24}>
+                    <h1 className="text-xl font-bold mb-6">基础信息</h1>
+                </Col>
                 <BasicInfoComponent/>
             </Row>
             <Divider className="mt-0"/>

@@ -14,6 +14,9 @@ class MenuTool {
         return values.map((value) => {
             let key = [prefix, value.path].filter(v => v).join("/");
             let item = this.sideItem(key, value.label, value.icon, undefined, value.enable);
+            if (value.sideIgnore) {
+                return undefined;
+            }
             if (value.children !== undefined) {
                 if (value.childrenIgnore) {
                     item.children = undefined

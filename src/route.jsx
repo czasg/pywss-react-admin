@@ -21,7 +21,8 @@ import RoleManageView from "./pages/view/system/RoleManage";
 import UserManageView from "./pages/view/system/UserManage";
 import jwt from "./utils/jwt";
 import UserInfo from "./pages/view/UserInfo";
-import AsyncTask from "./pages/view/async_task/AsyncTask";
+import AsyncTaskView from "./pages/view/async_task/AsyncTask";
+import AsyncTaskDetailView from "./pages/view/async_task/AsyncTaskDetail";
 
 function componentLoader() {
     const {token, valid} = jwt.getToken();
@@ -43,24 +44,21 @@ const appComponents = [
         loader: componentLoader,
     },
     {
-        path: "template",
-        label: "模板样例",
+        path: "async-task",
+        label: "异步任务",
         icon: <FileOutlined/>,
         children: [
             {
                 path: "task",
-                Component: AsyncTask,
+                Component: AsyncTaskView,
                 label: "任务管理",
                 icon: <ScanOutlined/>,
-                childrenIgnore: true,
-                children: [
-                    {
-                        path: "detail",
-                        Component: TemplateTaskList,
-                        label: "任务管理",
-                        icon: <ScanOutlined/>,
-                    },
-                ],
+            },
+            {
+                path: "task/:tid",
+                Component: AsyncTaskDetailView,
+                label: "任务详情",
+                sideIgnore: true,
             },
         ],
         loader: componentLoader,

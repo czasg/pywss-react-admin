@@ -72,8 +72,7 @@ export default function NavBar() {
         }
         breadcrumbItems.push({
             key: url,
-            // title: <Link to={url}>{appComponentsMap[url].label}</Link>,
-            title: appComponentsMap[url].label,
+            title: appComponentsMap[url] ? appComponentsMap[url].label : path,
         })
     })
     return (
