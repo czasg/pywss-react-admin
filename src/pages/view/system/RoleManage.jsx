@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
 import TableSearch from "../../../components/TableSearch";
 import {Divider, Tag, Space, Table, message, Button, Tree, Modal, Form, Input} from "antd";
-import RoleAPI from "../../../api/system/role";
-import UserAPI from "../../../api/system/user";
+import API from "../../../api/api";
 import jwt from "../../../utils/jwt";
 import {appComponents} from "../../../route";
 import menuTool from "../../../utils/menu";
@@ -49,7 +48,7 @@ export default function RoleManage() {
     const pageNum = pageInfo.current - 1;
     const add_role = (props) => {
         setModalConfirmLoading(true);
-        RoleAPI.add_role(props).then(data => data.data).then(data => {
+        API.System.role.add_role(props).then(data => data.data).then(data => {
             setModalConfirmLoading(false);
             if (data.code !== 0) {
                 message.open({
@@ -80,7 +79,7 @@ export default function RoleManage() {
     };
     const get_roles = () => {
         setLoading(true);
-        RoleAPI.get_roles({...query, pageSize, pageNum}).then(data => data.data).then(data => {
+        API.System.role.get_roles({...query, pageSize, pageNum}).then(data => data.data).then(data => {
             setLoading(false);
             if (data.code !== 0) {
                 message.open({
@@ -113,7 +112,7 @@ export default function RoleManage() {
     };
     const update_permission = (role, type, props) => {
         setModalConfirmLoading(true);
-        RoleAPI.update_role(role.id, type, props).then(data => data.data).then(data => {
+        API.System.role.update_role(role.id, type, props).then(data => data.data).then(data => {
             setModalConfirmLoading(false);
             if (data.code !== 0) {
                 message.open({

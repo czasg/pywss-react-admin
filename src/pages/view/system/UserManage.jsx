@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
 import TableSearch from "../../../components/TableSearch";
 import {Divider, Tag, Space, Table, message, Button, Switch, Modal, Form, Input} from "antd";
-import UserAPI from "../../../api/system/user";
-import RoleAPI from "../../../api/system/role";
+import API from "../../../api/api";
 import jwt from "../../../utils/jwt";
 
 const {CheckableTag} = Tag;
@@ -51,7 +50,7 @@ export default function UserManage() {
     const pageNum = pageInfo.current - 1;
     const get_users = () => {
         setLoading(true);
-        UserAPI.get_users({...query, pageSize, pageNum}).then(data => data.data).then(data => {
+        API.System.user.get_users({...query, pageSize, pageNum}).then(data => data.data).then(data => {
             setLoading(false);
             if (data.code !== 0) {
                 message.open({
@@ -84,7 +83,7 @@ export default function UserManage() {
     };
     const update_user = (user, type, props) => {
         setModalConfirmLoading(true);
-        UserAPI.update_user(user.id, type, props).then(data => data.data).then(data => {
+        API.System.user.update_user(user.id, type, props).then(data => data.data).then(data => {
             setModalConfirmLoading(false);
             if (data.code !== 0) {
                 message.open({
@@ -114,7 +113,7 @@ export default function UserManage() {
     };
     const add_user = (props) => {
         setModalConfirmLoading(true);
-        UserAPI.add_user(props).then(data => data.data).then(data => {
+        API.System.user.add_user(props).then(data => data.data).then(data => {
             setModalConfirmLoading(false);
             if (data.code !== 0) {
                 message.open({
@@ -144,7 +143,7 @@ export default function UserManage() {
         })
     };
     useEffect(() => {
-        RoleAPI.get_roles({pageSize: 1000}).then(data => data.data).then(data => {
+        API.System.role.get_roles({pageSize: 1000}).then(data => data.data).then(data => {
             if (data.code !== 0) {
                 message.open({
                     type: 'error',

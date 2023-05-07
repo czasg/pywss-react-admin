@@ -11,11 +11,11 @@ import {
     Popconfirm,
 } from 'antd';
 import {useLoaderData} from "react-router-dom";
-import UserAPI from "../../api/system/user";
+import API from "../../api/api";
 
 
 function update_user(uid, type, props) {
-    return UserAPI.update_user(uid, type, props).then(data => data.data).then(data => {
+    return API.System.user.update_user(uid, type, props).then(data => data.data).then(data => {
         if (data.code !== 0) {
             throw new Error(data.message);
         }

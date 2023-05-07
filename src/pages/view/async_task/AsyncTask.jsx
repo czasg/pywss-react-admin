@@ -6,7 +6,7 @@ import {
 } from "antd";
 import TableSearch from "../../../components/TableSearch";
 import jwt from "../../../utils/jwt";
-import AsyncTaskAPI from "../../../api/async_task/task";
+import API from "../../../api/api";
 import {Outlet, useNavigate} from "react-router-dom";
 
 function CreateTask({setQuery}) {
@@ -15,7 +15,7 @@ function CreateTask({setQuery}) {
     const [createTaskConfirmLoading, setCreateTaskConfirmLoading] = useState(false);
     const create_task = (props) => {
         setCreateTaskConfirmLoading(true);
-        AsyncTaskAPI.create_task(props).then(data => data.data).then(data => {
+        API.AsyncTask.task.create_task(props).then(data => data.data).then(data => {
             setCreateTaskConfirmLoading(false);
             if (data.code !== 0) {
                 message.open({
@@ -200,7 +200,7 @@ function TaskTableDeleteButton({task, trigger}) {
     const [loading, setLoading] = useState(false);
     const delete_task = (tid) => {
         setLoading(true);
-        AsyncTaskAPI.delete_task(tid).then(data => data.data).then(data => {
+        API.AsyncTask.task.delete_task(tid).then(data => data.data).then(data => {
             if (data.code !== 0) {
                 message.open({
                     type: 'error',
@@ -344,7 +344,7 @@ function TaskTableDetail({query}) {
     });
     useEffect(() => {
         setLoading(true);
-        AsyncTaskAPI.get_tasks({...query, pageSize, pageNum}).then(data => data.data).then(data => {
+        API.AsyncTask.task.get_tasks({...query, pageSize, pageNum}).then(data => data.data).then(data => {
             setLoading(false);
             if (data.code !== 0) {
                 message.open({
