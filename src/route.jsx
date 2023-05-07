@@ -23,6 +23,7 @@ import jwt from "./utils/jwt";
 import UserInfo from "./pages/view/UserInfo";
 import AsyncTaskView from "./pages/view/async_task/AsyncTask";
 import AsyncTaskDetailView from "./pages/view/async_task/AsyncTaskDetail";
+import IndexView from "./pages/view/Index";
 
 function componentLoader() {
     const {token, valid} = jwt.getToken();
@@ -40,7 +41,7 @@ const appComponents = [
         path: "index",
         label: "首页",
         icon: <HomeOutlined/>,
-        Component: TemplateTaskList,
+        Component: IndexView,
         loader: componentLoader,
     },
     {
