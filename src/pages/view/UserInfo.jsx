@@ -41,7 +41,7 @@ function BasicInfoComponent() {
     const [basicOpen, setBasicOpen] = useState(false);
     const [basicConfirmLoading, setBasicConfirmLoading] = useState(false);
     useEffect(() => {
-        UserAPI.get_user_by_uid(token.uid).then(data => data.data).then(data => {
+        API.System.user.get_user_by_uid(token.uid).then(data => data.data).then(data => {
             if (data.code !== 0) {
                 throw new Error(data.message);
             }
