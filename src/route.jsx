@@ -6,7 +6,6 @@ import {
     SettingOutlined,
     ScanOutlined,
     FileOutlined,
-    UserOutlined,
     UserAddOutlined,
     UserSwitchOutlined,
     SmileOutlined,
@@ -16,7 +15,6 @@ import {message, Result} from 'antd';
 import menuTool from "./utils/menu";
 import App from "./pages/App";
 import Login from "./pages/Login";
-import TemplateTaskList from "./pages/view/template/TaskList";
 import RoleManageView from "./pages/view/system/RoleManage";
 import UserManageView from "./pages/view/system/UserManage";
 import jwt from "./utils/jwt";
