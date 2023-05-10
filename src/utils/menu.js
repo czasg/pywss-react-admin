@@ -46,6 +46,9 @@ class MenuTool {
     sideItemsFilterByAuthority(values, permissions = []) {
         let resp = [];
         values.forEach(value => {
+            if (value === undefined) {
+                return
+            }
             if (value.children !== undefined) {
                 const children = this.sideItemsFilterByAuthority(value.children, permissions)
                 if (children.length > 0) {
