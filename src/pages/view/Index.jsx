@@ -4,7 +4,7 @@ import API from "../../api/api";
 import dayjs from 'dayjs';
 import zhCN from 'antd/locale/zh_CN';
 
-import {ConfigProvider, message, Row, Col, DatePicker, Card, Button} from "antd";
+import {ConfigProvider, message, Row, Col, DatePicker, Card, Button, Timeline} from "antd";
 
 const {RangePicker} = DatePicker;
 
@@ -159,9 +159,41 @@ export default function IndexView() {
             </Col>
         </Row>
         <Row>
-            <Col span={24}>
-                <Card hoverable >
+            <Col span={24} className="border-y-0" style={{
+                borderColor: "#f1f1f1",
+                backgroundColor: "#f1f1f1",
+            }}>
+                <Card hoverable>
                     <ReactECharts option={requestNumberOption}/>
+                </Card>
+            </Col>
+        </Row>
+        <Row>
+            <Col span={24} className="border-y-8" style={{
+                borderColor: "#f1f1f1",
+                backgroundColor: "#f1f1f1",
+            }}>
+                <Card hoverable className="pt-8">
+                    <Timeline
+                        mode={"left"}
+                        items={[
+                            {
+                                label: '2015-09-01',
+                                children: 'Create a services',
+                            },
+                            {
+                                label: '2015-09-01 09:12:11',
+                                children: 'Solve initial network problems',
+                            },
+                            {
+                                children: 'Technical testing',
+                            },
+                            {
+                                label: '2015-09-01 09:12:11',
+                                children: 'Network problems being solved',
+                            },
+                        ]}
+                    />
                 </Card>
             </Col>
         </Row>
