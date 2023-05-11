@@ -139,20 +139,18 @@ export default function IndexView() {
         <Row style={{
             backgroundColor: "#f1f1f1",
         }}>
-            <Col span={8} className="mt-2">
-                <Card hoverable className="cursor-default">
+            <Col span={8}>
+                <Card hoverable className="cursor-default mt-2" bordered={false}>
                     <ReactECharts option={apiStatOption}/>
                 </Card>
             </Col>
-            <Col span={8} className="border-x-8 border-t-8" style={{
-                borderColor: "#f1f1f1",
-            }}>
-                <Card hoverable className="cursor-default">
+            <Col span={8}>
+                <Card hoverable className="cursor-default m-2" bordered={false}>
                     <ReactECharts option={codeStatOption}/>
                 </Card>
             </Col>
-            <Col span={8} className="mt-2">
-                <Card hoverable className="cursor-default">
+            <Col span={8}>
+                <Card hoverable className="cursor-default mt-2" bordered={false}>
                     <ReactECharts option={userStatOption}/>
                 </Card>
             </Col>
@@ -161,7 +159,7 @@ export default function IndexView() {
             backgroundColor: "#f1f1f1",
         }}>
             <Col span={24} className="mt-2">
-                <Card hoverable className="cursor-default">
+                <Card hoverable className="cursor-default" bordered={false}>
                     <ReactECharts option={requestNumberOption}/>
                 </Card>
             </Col>
@@ -170,7 +168,7 @@ export default function IndexView() {
             backgroundColor: "#f1f1f1",
         }}>
             <Col span={24} className="mt-2">
-                <Card hoverable className="cursor-default">
+                <Card hoverable className="cursor-default" bordered={false}>
                     <div className="text-center text-lg font-bold mb-8">更新记录</div>
                     <Timeline
                         mode={"left"}
