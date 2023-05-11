@@ -14,6 +14,10 @@ function EChartsLineOptions({name, x, data}) {
             text: name,
             left: 'center',
         },
+        tooltip: {
+            show: true,
+            trigger: 'axis',
+        },
         legend: {
             show: false,
         },
@@ -116,7 +120,7 @@ export default function IndexView() {
             })
             throw e;
         })
-    }, dateRange);
+    }, [dateRange]);
     return <>
         <Row className="p-2" style={{
             borderColor: "#f1f1f1",
@@ -132,48 +136,43 @@ export default function IndexView() {
                 />
             </ConfigProvider>
         </Row>
-        <Row>
-            <Col span={8} className="border-y-8" style={{
-                borderColor: "#f1f1f1",
-                backgroundColor: "#f1f1f1",
-            }}>
+        <Row style={{
+            backgroundColor: "#f1f1f1",
+        }}>
+            <Col span={8} className="mt-2">
                 <Card hoverable>
                     <ReactECharts option={apiStatOption}/>
                 </Card>
             </Col>
-            <Col span={8} className="border-8" style={{
+            <Col span={8} className="border-x-8 border-t-8" style={{
                 borderColor: "#f1f1f1",
-                backgroundColor: "#f1f1f1",
             }}>
                 <Card hoverable>
                     <ReactECharts option={codeStatOption}/>
                 </Card>
             </Col>
-            <Col span={8} className="border-y-8" style={{
-                borderColor: "#f1f1f1",
-                backgroundColor: "#f1f1f1",
-            }}>
+            <Col span={8} className="mt-2">
                 <Card hoverable>
                     <ReactECharts option={userStatOption}/>
                 </Card>
             </Col>
         </Row>
-        <Row>
-            <Col span={24} className="border-y-0" style={{
-                borderColor: "#f1f1f1",
-                backgroundColor: "#f1f1f1",
-            }}>
+        <Row style={{
+            backgroundColor: "#f1f1f1",
+        }}>
+            <Col span={24} className="mt-2">
                 <Card hoverable>
                     <ReactECharts option={requestNumberOption}/>
                 </Card>
             </Col>
         </Row>
-        <Row>
-            <Col span={24} className="border-y-8" style={{
-                borderColor: "#f1f1f1",
-                backgroundColor: "#f1f1f1",
-            }}>
-                <Card hoverable className="pt-8">
+        <Row style={{
+            backgroundColor: "#f1f1f1",
+        }}>
+            <Col span={24} className="mt-2">
+
+                <Card hoverable className="cursor-default">
+                    <div className="text-center text-lg font-bold mb-8">更新记录</div>
                     <Timeline
                         mode={"left"}
                         items={[
@@ -186,6 +185,23 @@ export default function IndexView() {
                                 children: 'Solve initial network problems',
                             },
                             {
+                                label: '2015-09-01 09:12:11',
+                                children: 'Technical testing',
+                            },
+                            {
+                                label: '2015-09-01 09:12:11',
+                                children: 'Network problems being solved',
+                            },
+                            {
+                                label: '2015-09-01',
+                                children: 'Create a services',
+                            },
+                            {
+                                label: '2015-09-01 09:12:11',
+                                children: 'Solve initial network problems',
+                            },
+                            {
+                                label: '2015-09-01 09:12:11',
                                 children: 'Technical testing',
                             },
                             {
