@@ -2,6 +2,7 @@ import role from "./system/role";
 import user from "./system/user";
 import task from "./async_task/task";
 import stat from "./stat/stat";
+import exam from "./exam/exam";
 
 class API {
     constructor() {
@@ -14,6 +15,9 @@ class API {
         };
         this.Stat = {
             stat,
+        };
+        this.Exam = {
+            exam,
         };
     }
 }

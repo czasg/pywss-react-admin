@@ -225,9 +225,7 @@ export default function RoleManage() {
             open={isModalOpen}
             onOk={() => {
                 setLoading(true);
-                setTimeout(() => {
-                    update_permission(curRole, 'permission', {permission: checkedKeys});
-                }, 300);
+                update_permission(curRole, 'permission', {permission: checkedKeys});
             }}
             confirmLoading={modalConfirmLoading}
             onCancel={() => {

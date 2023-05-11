@@ -64,12 +64,23 @@ class MenuTool {
     }
 
     treeItemFromAppComponents(values, prefix = "") {
-        return values.map((value) => {
+        let resp = [];
+        for (let value of values) {
             let key = [prefix, value.path].filter(v => v).join("/");
             let item = {
                 title: value.label,
                 key: key,
                 children: undefined,
+            }
+            if (key === "system") {
+                resp.push({
+                    ...item,
+                    disabled: true,
+                })
+                continue
+            }
+            if (value.sideIgnore === true) {
+                continue
             }
             if (value.children !== undefined) {
                 if (value.childrenIgnore) {
@@ -78,8 +89,9 @@ class MenuTool {
                     item.children = this.treeItemFromAppComponents(value.children, key)
                 }
             }
-            return item
-        });
+            resp.push(item);
+        }
+        return resp
     }
 }
 

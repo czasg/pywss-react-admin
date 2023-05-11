@@ -9,9 +9,10 @@ import {
     UserAddOutlined,
     UserSwitchOutlined,
     SmileOutlined,
+    ReadOutlined,
+    PaperClipOutlined,
 } from '@ant-design/icons';
 import {message, Result} from 'antd';
-
 import menuTool from "./utils/menu";
 import App from "./pages/App";
 import Login from "./pages/Login";
@@ -22,6 +23,7 @@ import UserInfo from "./pages/view/UserInfo";
 import AsyncTaskView from "./pages/view/async_task/AsyncTask";
 import AsyncTaskDetailView from "./pages/view/async_task/AsyncTaskDetail";
 import IndexView from "./pages/view/Index";
+import ExamPageView from "./pages/view/exam/ExamPage";
 
 function componentLoader() {
     const {token, valid} = jwt.getToken();
@@ -58,6 +60,20 @@ const appComponents = [
                 Component: AsyncTaskDetailView,
                 label: "任务详情",
                 sideIgnore: true,
+            },
+        ],
+        loader: componentLoader,
+    },
+    {
+        path: "exam-system",
+        label: "考试系统",
+        icon: <ReadOutlined/>,
+        children: [
+            {
+                path: "exam",
+                Component: ExamPageView,
+                label: "考试系统",
+                icon: <PaperClipOutlined/>,
             },
         ],
         loader: componentLoader,
