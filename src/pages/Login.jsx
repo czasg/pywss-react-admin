@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {
     Button,
     Form,
@@ -13,9 +13,12 @@ import {LockOutlined, UserOutlined, SlackOutlined} from '@ant-design/icons';
 import "./Login.css";
 import {useNavigate} from "react-router-dom";
 import UserAPI from "../api/system/user";
-
+import {Context, JwtContext} from "../context";
 
 function LoginForm() {
+    const ctx = useContext(Context);
+    console.log(ctx)
+    const jwtToken = useContext(JwtContext);
     const navigate = useNavigate();
     const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(false);
@@ -40,6 +43,7 @@ function LoginForm() {
                 return
             }
             localStorage.setItem('jwtToken', data.data.token);
+            ctx.setJwtToken(data.data.token);
             messageApi.open({
                 key,
                 type: 'success',
